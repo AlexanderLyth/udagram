@@ -1,4 +1,5 @@
 import express from 'express';
+import { Router, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
@@ -26,9 +27,36 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //    image_url: URL of a publicly accessible image
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
-
+  
   /**************************************************************************** */
+  app.get( "/filteredimage",
+    async (req: Request, res: Response) => {
+      let image_url = req.query.image_url;
 
+      /*
+      * The following solution for the URL is taken From:
+      * https://www.freecodecamp.org/news/check-if-a-javascript-string-is-a-url
+      */
+      const isValidUrl = (urlString: string) => {
+        try { 
+          return Boolean(new URL(urlString)); 
+        }
+        catch(e){ 
+          return false; 
+        }
+      }
+
+      if(!isValidUrl(image_url)) {
+        return res.status(400).send(`URL Invalid`);
+      }
+      
+      const filteredpath = await filterImageFromURL(image_url);
+
+      res.sendFile(filteredpath, function(){
+        deleteLocalFiles([filteredpath]);
+      });
+   } );
+  
   //! END @TODO1
   
   // Root Endpoint

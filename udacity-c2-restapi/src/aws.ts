@@ -43,16 +43,6 @@ export function getGetSignedUrl( key: string ): string{
  */
 export function getPutSignedUrl( key: string ){
 
-
-    console.log("bucket " + c.aws_media_bucket);
-    console.log("profile " + c.aws_profile);
-    console.log("region " + c.aws_region);
-
-    console.log("username " + c.username);
-    console.log("host " + c.host);
-    console.log("password " + c.password);
-    console.log("database " + c.database);
-
     const signedUrlExpireSeconds = 60 * 5
 
     const url: string = s3.getSignedUrl('putObject', {
